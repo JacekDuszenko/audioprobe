@@ -1,5 +1,5 @@
 # AudioProbe
-
+<MULTIPLATFORM SUPPORT IN PROGRESS>
 A Python library with a native C++ extension for FFmpeg's libavformat/libavcodec that provides a simple interface to extract audio file metadata.
 
 ## Installation
