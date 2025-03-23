@@ -1,0 +1,31 @@
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# Set PowerShell as the default shell
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install Chocolatey package manager
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+# Install build tools and dependencies
+RUN choco install -y python3 git visualstudio2019-workload-vctools cmake nasm yasm ffmpeg
+
+# Set PATH to include Python and other tools
+RUN $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';C:\Python310;C:\Python310\Scripts'; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, 'Machine')
+
+# Update pip and install project dependencies
+RUN python -m pip install --upgrade pip
+
+# Create app directory
+WORKDIR C:/app
+COPY . C:/app/
+
+# Install project dependencies
+WORKDIR C:/app/check
+RUN python -m pip install -e ".[test]"
+WORKDIR C:/app
+
+ENTRYPOINT ["powershell.exe", "-Command"]
+CMD ["python -m pytest"] 

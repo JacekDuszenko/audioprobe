@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+audioprobe.cpython-310-darwin.so
+audioprobe.egg-info
+build
+dist
+*.so
+*.so.*
+*.so.*.*
+.venv
